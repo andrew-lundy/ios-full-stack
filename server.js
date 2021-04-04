@@ -45,11 +45,15 @@ var server = app.listen(8081, '192.168.0.22', () => {
 app.post('/delete', (req, res) => {
     Data.findOneAndRemove({
         _id: req.get('id')
-    }, (err) => {
-        console.log(`Unable to delete note. Error: ${err}`);
+    }, (err, result) => {
+        if (result) {
+            console.log(`Note has been deleted. ${result}`);
+            res.send('The note has been deleted!');
+        } else if (err) {
+            console.log(`Error: ${err}`);
+            res.send('Unable to delete the note.');
+        }
     });
-
-    res.send('Deleted!');
 });
 
  // Update a note POST
@@ -73,7 +77,6 @@ app.post('/update', (req, res) => {
         }
     });
 });
-
 
 
  // Fetch all notes GET
